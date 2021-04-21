@@ -2,20 +2,20 @@ using UnityEngine;
 
 public class FrameConstraints : MonoBehaviour
 {
-    [SerializeField] Transform wheelBase;
+    [SerializeField] Transform frame;
     //[SerializeField] Transform frontWheelBase;
 
     [SerializeField] Transform cameraOffset;
-    Vector3 cameraOffsetToWheelBaseOffset;
+    Vector3 cameraOffsetToFrameOffset;
 
 
     void Start()
     {
-        wheelBase = wheelBase ? wheelBase : transform.Find("WheelBase");
+        frame = frame ? frame : transform.Find("Frame");
         //frontWheelBase = frontWheelBase ? frontWheelBase : GameObject.Find("FrontWheelBase").transform;
 
         cameraOffset = transform.Find("Camera Offset");
-        cameraOffsetToWheelBaseOffset = cameraOffset.position - wheelBase.position;
+        cameraOffsetToFrameOffset = cameraOffset.position - frame.position;
     }
 
     void FixedUpdate()
@@ -25,7 +25,7 @@ public class FrameConstraints : MonoBehaviour
         // Lock front wheel base's rotation to the main wheel base.
         //frontWheelBase.rotation = parentRotation;
 
-        cameraOffset.position = wheelBase.position + cameraOffsetToWheelBaseOffset;
-        cameraOffset.rotation = wheelBase.rotation;
+        cameraOffset.position = frame.position + cameraOffsetToFrameOffset;
+        cameraOffset.rotation = frame.rotation;
     }
 }
