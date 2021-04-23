@@ -26,15 +26,9 @@ public class WheelGrabTest : XRBaseInteractable
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         wheelRadius = GetComponent<SphereCollider>().radius;
-    }
 
-    private void FixedUpdate()
-    {
-        // TEMPORARY: maybe throw this in a co-routine for optimization's sake?
-        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit))
-        {
-            onSlope = hit.normal != Vector3.up;
-        }
+        // Slope check is run in coroutine at optimized intervals.
+        StartCoroutine(CheckForSlope());
     }
 
     protected override void OnSelectEntered(SelectEnterEventArgs eventArgs)
@@ -58,7 +52,7 @@ public class WheelGrabTest : XRBaseInteractable
     }
 
     /// <summary>
-    /// Generates a "grab point" object to function as an intermediate handle between the interactor and wheel's rigidbody. This "grab
+    /// Generates a grab point to mediate physics interaction with the wheel's rigidbody. This "grab
     /// point" contains an XRGrabInteractable component, as well as a rigidbody. It's fused to the wheel using a Fixed Joint.
     /// </summary>
     /// <param name="interactor">Interactor which is making the selection.</param>
@@ -70,8 +64,7 @@ public class WheelGrabTest : XRBaseInteractable
             interactionManager.CancelInteractableSelection(grabPoint.GetComponent<XRGrabInteractable>());
         }
 
-        // Instantiate new grab point interactable at interactor's position/rotation.
-        //grabPoint = Instantiate(grabPointPrefab, interactor.transform.position, interactor.transform.rotation);
+        // Instantiate new grab point at interactor's position.
         grabPoint = new GameObject($"{transform.name}'s grabPoint", typeof(GrabPoint), typeof(Rigidbody), typeof(FixedJoint));
 
         grabPoint.transform.position = interactor.transform.position;
@@ -157,5 +150,18 @@ public class WheelGrabTest : XRBaseInteractable
 
         //float normal = Mathf.InverseLerp(aLow, aHigh, value);
         //float bValue = Mathf.Lerp(bLow, bHigh, normal);
+    }
+
+        IEnumerator CheckForSlope()
+    {
+        while (true)
+        {
+            if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit))
+            {
+                onSlope = hit.normal != Vector3.up;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 }
