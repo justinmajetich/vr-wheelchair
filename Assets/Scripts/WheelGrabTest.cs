@@ -58,7 +58,8 @@ public class WheelGrabTest : XRBaseInteractable
     }
 
     /// <summary>
-    /// 
+    /// Generates a "grab point" object to function as an intermediate handle between the interactor and wheel's rigidbody. This "grab
+    /// point" contains an XRGrabInteractable component, as well as a rigidbody. It's fused to the wheel using a Fixed Joint.
     /// </summary>
     /// <param name="interactor">Interactor which is making the selection.</param>
     void SpawnGrabPoint(XRBaseInteractor interactor)
@@ -70,10 +71,13 @@ public class WheelGrabTest : XRBaseInteractable
         }
 
         // Instantiate new grab point interactable at interactor's position/rotation.
-        grabPoint = Instantiate(grabPointPrefab, interactor.transform.position, interactor.transform.rotation);
+        //grabPoint = Instantiate(grabPointPrefab, interactor.transform.position, interactor.transform.rotation);
+        grabPoint = new GameObject($"{transform.name}'s grabPoint", typeof(GrabPoint), typeof(Rigidbody), typeof(FixedJoint));
+
+        grabPoint.transform.position = interactor.transform.position;
 
         // Attach grab point to this wheel using fixed joint.
-        grabPoint.GetComponent<FixedJoint>().connectedBody = gameObject.GetComponent<Rigidbody>();
+        grabPoint.GetComponent<FixedJoint>().connectedBody = GetComponent<Rigidbody>();
 
         // Force selection between current interactor and new grab point.
         interactionManager.ForceSelect(interactor, grabPoint.GetComponent<XRGrabInteractable>());
