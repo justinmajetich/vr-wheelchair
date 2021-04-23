@@ -10,9 +10,10 @@ public class WheelGrabTest : XRBaseInteractable
     float wheelRadius;
 
     bool onSlope = false;
+    [SerializeField] bool hapticsEnabled = true;
 
-    [Range(0, 5f), Tooltip("Distance from wheel collider at which the interaction manager will force the interactor to deselect.")]
-    [SerializeField] float autoDeselectDistance = 0.25f;
+    [Range(0, 0.5f), Tooltip("Distance from wheel collider at which the interaction manager will cancel selection.")]
+    [SerializeField] float deselectionThreshold = 0.25f;
 
     public GameObject grabPointPrefab;
     GameObject grabPoint;
@@ -33,7 +34,6 @@ public class WheelGrabTest : XRBaseInteractable
         if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit))
         {
             onSlope = hit.normal != Vector3.up;
-            label1.text = $"{transform.name} is on slope: {onSlope}";
         }
     }
 
@@ -43,39 +43,67 @@ public class WheelGrabTest : XRBaseInteractable
 
         XRBaseInteractor interactor = eventArgs.interactor;
 
-        // Force end selection with this object.
+        // Forcibly cancel selection with this wheel object.
         interactionManager.CancelInteractableSelection(this);
 
         SpawnGrabPoint(interactor);
 
         StartCoroutine(BrakeAssist(interactor));
         StartCoroutine(MonitorDetachDistance(interactor));
+
+        if (hapticsEnabled)
+        {
+            StartCoroutine(SendHapticFeedback(interactor));
+        }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="interactor">Interactor which is making the selection.</param>
     void SpawnGrabPoint(XRBaseInteractor interactor)
     {
+        // If there is an active grab point, cancel selection.
         if (grabPoint)
         {
             interactionManager.CancelInteractableSelection(grabPoint.GetComponent<XRGrabInteractable>());
         }
 
-        // Instantiate grab handle interactable.
+        // Instantiate new grab point interactable at interactor's position/rotation.
         grabPoint = Instantiate(grabPointPrefab, interactor.transform.position, interactor.transform.rotation);
 
-        // Attach grab handle to wheel using fixed joint.
+        // Attach grab point to this wheel using fixed joint.
         grabPoint.GetComponent<FixedJoint>().connectedBody = gameObject.GetComponent<Rigidbody>();
 
-        // Force selection between current interactor and this wheel's grab handle.
+        // Force selection between current interactor and new grab point.
         interactionManager.ForceSelect(interactor, grabPoint.GetComponent<XRGrabInteractable>());
+    }
 
+    IEnumerator BrakeAssist(XRBaseInteractor interactor)
+    {
+        XRNodeVelocitySupplier interactorVelocity = interactor.GetComponent<XRNodeVelocitySupplier>();
+
+        while (grabPoint)
+        {
+            // If the interactor's forward/backward movement approximates zero, it is considered to be braking.
+            if (interactorVelocity.velocity.z < 0.05f && interactorVelocity.velocity.z > -0.05f)
+            {
+                m_Rigidbody.AddTorque(-m_Rigidbody.angularVelocity.normalized * 25f);
+
+                SpawnGrabPoint(interactor);
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     IEnumerator MonitorDetachDistance(XRBaseInteractor interactor)
     {
-        // Perform couroutine while this wheel has an active grabPoint.
+        // While this wheel has an active grabPoint.
         while (grabPoint)
         {
-            if (Vector3.Distance(transform.position, interactor.transform.position) >= wheelRadius + autoDeselectDistance)
+            // If interactor drifts beyond the threshold distance from wheel, force deselection.
+            if (Vector3.Distance(transform.position, interactor.transform.position) >= wheelRadius + deselectionThreshold)
             {
                 interactionManager.CancelInteractorSelection(interactor);
             }
@@ -84,26 +112,46 @@ public class WheelGrabTest : XRBaseInteractable
         }
     }
 
-    IEnumerator BrakeAssist(XRBaseInteractor interactor)
+    IEnumerator SendHapticFeedback(XRBaseInteractor interactor)
     {
-        ActionBasedController controller = interactor.GetComponent<ActionBasedController>();
-        XRNodeVelocitySupplier interactorVelocity = interactor.GetComponent<XRNodeVelocitySupplier>();
+        // Interval between iterations of coroutine, in seconds.
+        float runInterval = 0.1f;
 
-        // Perform couroutine while this wheel has an active grabPoint.
+        ActionBasedController controller = interactor.GetComponent<ActionBasedController>();
+
+        Vector3 lastAngularVelocity = new Vector3(transform.InverseTransformDirection(m_Rigidbody.angularVelocity).x, 0f, 0f);
+
         while (grabPoint)
         {
-            // The range of forward/backward controller velocity defining a braking state.
-            bool interactorIsBraking = interactorVelocity.velocity.z < 0.05f && interactorVelocity.velocity.z > -0.05f;
+            Vector3 currentAngularVelocity = new Vector3(transform.InverseTransformDirection(m_Rigidbody.angularVelocity).x, 0f, 0f);
+            Vector3 angularAcceleration = (currentAngularVelocity - lastAngularVelocity) / runInterval;
 
-            if (interactorIsBraking)
+            // If current velocity and acceleration have perpendicular or opposite directions, the wheel is decelerating.
+            if (Vector3.Dot(currentAngularVelocity.normalized, angularAcceleration.normalized) < 0f)
             {
-                controller.SendHapticImpulse(0.1f, 0.1f);
+                float impulseAmplitude = Mathf.Abs(angularAcceleration.x);
 
-                m_Rigidbody.AddTorque(-m_Rigidbody.angularVelocity.normalized * 25f);
+                if (impulseAmplitude > 1.5f)
+                {
+                    float remappedImpulseAmplitude = Remap(impulseAmplitude, 1.5f, 40f, 0f, 1f);
 
-                SpawnGrabPoint(interactor);
+                    controller.SendHapticImpulse(remappedImpulseAmplitude, runInterval * 2f);
+                }
             }
-            yield return null;
+
+            lastAngularVelocity = currentAngularVelocity;
+            yield return new WaitForSeconds(runInterval);
         }
+    }
+
+    /// <summary>
+    /// This is a utility method which remaps a float value from one range to another.
+    /// </summary>
+    float Remap(float value, float from1, float to1, float from2, float to2)
+    {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+
+        //float normal = Mathf.InverseLerp(aLow, aHigh, value);
+        //float bValue = Mathf.Lerp(bLow, bHigh, normal);
     }
 }

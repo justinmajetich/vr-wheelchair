@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -7962427762659811155}
   - component: {fileID: 8878188057727575324}
   m_Layer: 0
-  m_Name: GrabHandle
+  m_Name: WheelGrabPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,7 +42,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 870809701926898131}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
