@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WheelAudio : MonoBehaviour
+public class VRWC_WheelAudio : MonoBehaviour
 {
     AudioSource m_AudioSource;
     Rigidbody m_Rigidbody;

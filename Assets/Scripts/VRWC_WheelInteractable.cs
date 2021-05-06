@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class WheelGrabTest : XRBaseInteractable
+public class VRWC_WheelInteractable : XRBaseInteractable
 {
     Rigidbody m_Rigidbody;
 
@@ -64,7 +64,7 @@ public class WheelGrabTest : XRBaseInteractable
         }
 
         // Instantiate new grab point at interactor's position.
-        grabPoint = new GameObject($"{transform.name}'s grabPoint", typeof(GrabPoint), typeof(Rigidbody), typeof(FixedJoint));
+        grabPoint = new GameObject($"{transform.name}'s grabPoint", typeof(VRWC_GrabPoint), typeof(Rigidbody), typeof(FixedJoint));
 
         grabPoint.transform.position = interactor.transform.position;
 
@@ -77,7 +77,7 @@ public class WheelGrabTest : XRBaseInteractable
 
     IEnumerator BrakeAssist(XRBaseInteractor interactor)
     {
-        XRNodeVelocitySupplier interactorVelocity = interactor.GetComponent<XRNodeVelocitySupplier>();
+        VRWC_XRNodeVelocitySupplier interactorVelocity = interactor.GetComponent<VRWC_XRNodeVelocitySupplier>();
 
         while (grabPoint)
         {
@@ -151,7 +151,7 @@ public class WheelGrabTest : XRBaseInteractable
         //float bValue = Mathf.Lerp(bLow, bHigh, normal);
     }
 
-        IEnumerator CheckForSlope()
+    IEnumerator CheckForSlope()
     {
         while (true)
         {

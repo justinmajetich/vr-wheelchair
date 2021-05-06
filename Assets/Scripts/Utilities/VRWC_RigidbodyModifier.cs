@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Utility class exposing otherwise hidden Rigidbody properties for in-editor modification.
 /// </summary>
-public class RigidbodyModifier : MonoBehaviour
+public class VRWC_RigidbodyModifier : MonoBehaviour
 {
     Rigidbody rb;
 

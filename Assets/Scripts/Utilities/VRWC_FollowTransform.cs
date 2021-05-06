@@ -4,7 +4,7 @@ using UnityEngine;
 /// Modifies a transform's position and rotation to maintain a constant offset with a target transform.
 /// Useful for syncing the position/rotation of two objects which are siblings within the hierarchy.
 /// </summary>
-public class FollowTransform : MonoBehaviour
+public class VRWC_FollowTransform : MonoBehaviour
 {
     [Tooltip("Transform of the rigidbody to follow.")]
     public Transform target;

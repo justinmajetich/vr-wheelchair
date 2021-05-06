@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// The GrabPoint will destroy it's GameObject when no longer selected.
 /// GrabPoint inherits from XRGrabInteractable, part of Unity's XR Interaction Toolkit.
 /// </summary>
-public class GrabPoint : XRGrabInteractable
+public class VRWC_GrabPoint : XRGrabInteractable
 {
     protected override void Awake()
     {
