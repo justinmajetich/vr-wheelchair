@@ -17,6 +17,7 @@
 /[Aa]ssets/XR*
 /[Aa]ssets/TutorialInfo*
 /[Aa]ssets/TextMesh\ Pro*
+/[Aa]ssets/Textures/Textures_Unused*
 /[Aa]ssets/Settings*
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
