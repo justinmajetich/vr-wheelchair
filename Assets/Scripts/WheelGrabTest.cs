@@ -15,7 +15,6 @@ public class WheelGrabTest : XRBaseInteractable
     [Range(0, 0.5f), Tooltip("Distance from wheel collider at which the interaction manager will cancel selection.")]
     [SerializeField] float deselectionThreshold = 0.25f;
 
-    public GameObject grabPointPrefab;
     GameObject grabPoint;
 
     public Text label1;

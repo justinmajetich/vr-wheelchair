@@ -1,7 +1,7 @@
 using UnityEngine.XR.Interaction.Toolkit;
 
 /// <summary>
-/// Provides a disposable grab point to mediate interaction with a VRWheelControl.
+/// Provides a disposable grab point to mediate phyiscs interaction with a VRWheelControl.
 /// The GrabPoint will destroy it's GameObject when no longer selected.
 /// GrabPoint inherits from XRGrabInteractable, part of Unity's XR Interaction Toolkit.
 /// </summary>
