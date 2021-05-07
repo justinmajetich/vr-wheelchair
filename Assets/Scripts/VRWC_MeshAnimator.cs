@@ -1,6 +1,8 @@
 using UnityEngine;
 
-// Animates wheelchair meshes to express the physical movement of the rig.
+/// <summary>
+/// Animates wheelchair meshes to express the physical movement of the rig.
+/// </summary>
 public class VRWC_MeshAnimator : MonoBehaviour
 {
     public Rigidbody frame;

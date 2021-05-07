@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Inheriting from XRBaseInteractable, VRWC_WheelInteractable provides unique behavior to hanlde dynamic grab point, braking, and auto-deselection.
+/// </summary>
 public class VRWC_WheelInteractable : XRBaseInteractable
 {
     Rigidbody m_Rigidbody;
