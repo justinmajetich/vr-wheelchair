@@ -1,7 +1,7 @@
 # VR Wheelchair
 
 <p align="center">
-<   img alt="VRWC Logo" src="./Assets/Textures/vr-wheelchair-logo.png" width="200">
+    <img alt="VRWC Logo" src="./Assets/Textures/vr-wheelchair-logo.png" width="200">
 </p>
 
 VR Wheelchair is a wheelchair locomotion rig for virtual reality applications built in Unity. The rig is layered closely on top of Unity's [XR Interaction Toolkit](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@1.0/manual/index.html) to provide cross-platform compatibility. The package contains a complete player controller rig (based on Unity's "Room-Scale XR Rig (Action-based)") which can be easily imported as a prefab into an existing Unity project.
