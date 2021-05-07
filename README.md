@@ -22,14 +22,6 @@ VR Wheelchair is motivated to iterate on one of VR's looming design problems - l
 
 You can read more about the project's key motivations, as well as my development process, in the [project devlog](https://justinmajetich.medium.com/vr-wheelchair-devlog-ce51023c1b00).
 
-<br/>
-
-<p align="center">
-    <img alt="Demo" src="./captures/demo-short.gif" width="300">
-</p>
-
-<br/>
-
 
 ## Features
 
@@ -53,6 +45,14 @@ VR Wheelchair is still in prototype, but I'm projecting a version 1.0 release on
 You can demo a prototype version of the VR Wheelchair rig on your Oculus Quest: [Download APK](https://drive.google.com/file/d/1JvLnPTRQp6nLgtoKSW6U6pl9jDtZysRV/view?usp=sharing)
 
 Install to your Quest using [SideQuest](https://sidequestvr.com/setup-howto) or Android's [adb](https://developer.android.com/studio/command-line/adb).
+
+<br/>
+
+<p align="center">
+    <img alt="Demo" src="./captures/demo-short.gif" width="300">
+</p>
+
+<br/>
 
 ## About Me
 
