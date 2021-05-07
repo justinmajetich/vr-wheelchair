@@ -52,8 +52,6 @@ Install to your Quest using [SideQuest](https://sidequestvr.com/setup-howto) or 
     <img alt="Demo" src="./captures/demo-short.gif" width="300">
 </p>
 
-<br/>
-
 ## About Me
 
 I'm a New York City-based Unity Developer with full-stack certification from @holbertonschool.
